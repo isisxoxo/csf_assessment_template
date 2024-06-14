@@ -1,12 +1,7 @@
 package ibf2023.csf.backend.controllers;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ibf2023.csf.backend.services.PictureService;
 import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 // You can add addtional methods and annotations to this controller. 
 // You cannot remove any existing annotations or methods from UploadController
@@ -26,6 +22,12 @@ public class UploadController {
 
 	@Autowired
 	private PictureService pictureService;
+
+	@Value("${preconfigured.threshold}")
+	private String threshold;
+
+	@Value("${preconfigured.threshold.unit}")
+	private String thresholdUnit;
 
 	// TODO Task 5.2
 	// You may change the method signature by adding additional parameters and
@@ -44,19 +46,44 @@ public class UploadController {
 		System.out.println(">>>> DATE: " + date); // TO REMOVE - DATE: 2024-06-14T03:30:12.927Z
 		System.out.println(">>>> PICTURE: " + picture.getOriginalFilename()); // TO REMOVE
 
-		// GET FILE SIZE
-		pictureService.getTotalFileSize();
+		// GET TOTAL FILE SIZE
+		Long totalFileSizeBytes = pictureService.getTotalFileSize();
 
-		// SAVE TO MONGO AND DO
-		// try {
-		// pictureService.save(title, comments, date, picture); // Saved as bytes
-		// } catch (IOException | ParseException e) {
-		// e.printStackTrace();
-		// }
+		// COMPARE WITH THRESHOLD
+		Long thresholdLong = Long.parseLong(threshold);
+		String thresholdUnitUc = thresholdUnit.toUpperCase();
+		Long thresholdBytes;
 
-		// // TO ADD ON OTHERS
-		return ResponseEntity.ok(
-				Json.createObjectBuilder().build().toString());
+		if (thresholdUnitUc.equals("MB")) {
+			thresholdBytes = thresholdLong * 1000000;
+		} else if (thresholdUnitUc.equals("GB")) {
+			thresholdBytes = thresholdLong * 1000000 * 1000;
+		} else {
+			thresholdBytes = thresholdLong;
+		}
+
+		JsonObject payload;
+
+		if ((totalFileSizeBytes + picture.getSize()) <= thresholdBytes) {
+			// If have enough space, save to MongoDB and DO
+			try {
+
+				String pk = pictureService.save(title, comments, date, picture);
+				payload = Json.createObjectBuilder().add("id", pk).build();
+				return ResponseEntity.ok().body(payload.toString()); // 200
+
+			} catch (Exception e) {
+				payload = Json.createObjectBuilder().add("message", e.getMessage()).build();
+				return ResponseEntity.status(500).body(payload.toString()); // 500
+			}
+		} else {
+			payload = Json.createObjectBuilder()
+					.add("message",
+							"The upload has exceeded your monthly upload quota of " + threshold + " "
+									+ thresholdUnitUc)
+					.build();
+			return ResponseEntity.status(413).body(payload.toString()); // 413
+		}
 	}
 
 	// @PostMapping(path="/image/upload", consumes =

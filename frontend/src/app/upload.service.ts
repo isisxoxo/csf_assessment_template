@@ -13,12 +13,8 @@ export class UploadService {
 
   // TODO: Task 3.
   // You may add add parameters to the method
-  upload(form: any): Promise<any> {
-
-    const formData = new FormData();
-    formData.set("title", form['title']);
-    formData.set("comments", form['commenets']);
-    formData.set("date", (new Date()).toISOString());
+  upload(formData: any): Promise<any> {
+    
     formData.set("picture", dataToImage(this.imageData));
     
     return firstValueFrom(this.http.post<any>("/api/image/upload", formData));

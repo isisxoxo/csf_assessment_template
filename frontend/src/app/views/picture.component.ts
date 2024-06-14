@@ -38,12 +38,20 @@ export class PictureComponent implements OnInit {
   }
 
   submit() {
-    this.saveForm$ = this.uploadSvc.upload(this.form)
+
+    const formData = new FormData();
+    formData.set("title", this.form.get('title')?.value);
+    formData.set("comments", this.form.get('comments')?.value);
+    formData.set("date", (new Date()).toISOString());
+    
+    this.saveForm$ = this.uploadSvc.upload(formData)
                     .then(
                       data => this.router.navigate(['/'])
                     )
                     .catch(
-                      error => alert(error)
+                      error => {
+                        alert(error.error.message)
+                      }
                     )
   }
 }

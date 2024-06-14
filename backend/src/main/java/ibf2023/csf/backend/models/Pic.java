@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "travelpics")
 public class Pic {
@@ -11,16 +12,21 @@ public class Pic {
     @Id
     private String id;
 
+    @Field("title")
     private String title;
+
+    @Field("comments")
     private String comments;
     private Date date;
     private String url;
-    private long fileSize;
+
+    @Field("fileSize")
+    private Long fileSize;
 
     public Pic() {
     }
 
-    public Pic(String title, String comments, Date date, String url, long fileSize) {
+    public Pic(String title, String comments, Date date, String url, Long fileSize) {
         this.title = title;
         this.comments = comments;
         this.date = date;
@@ -28,7 +34,7 @@ public class Pic {
         this.fileSize = fileSize;
     }
 
-    public Pic(String id, String title, String comments, Date date, String url, long fileSize) {
+    public Pic(String id, String title, String comments, Date date, String url, Long fileSize) {
         this.id = id;
         this.title = title;
         this.comments = comments;
@@ -77,11 +83,11 @@ public class Pic {
         this.url = url;
     }
 
-    public long getFileSize() {
+    public Long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(long fileSize) {
+    public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 

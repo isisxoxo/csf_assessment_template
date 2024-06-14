@@ -1,19 +1,19 @@
 package ibf2023.csf.backend.models;
 
 public class UploadInfo {
-    private long fileSize;
+    private Long fileSize;
     private String url;
 
-    public UploadInfo(long fileSize, String url) {
+    public UploadInfo(Long fileSize, String url) {
         this.fileSize = fileSize;
         this.url = url;
     }
 
-    public long getFileSize() {
+    public Long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(long fileSize) {
+    public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 

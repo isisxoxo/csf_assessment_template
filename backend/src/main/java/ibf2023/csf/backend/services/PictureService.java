@@ -24,13 +24,13 @@ public class PictureService {
 	// You may change the method signature by adding parameters and/or the return
 	// type
 	// You may throw any exception
-	public void save(String title, String comments, String date, MultipartFile picture)
+	public String save(String title, String comments, String date, MultipartFile picture)
 			throws IOException, ParseException {
 		UploadInfo uploadInfo = imageRepo.save(picture, title);
-		pictureRepo.save(title, comments, date, uploadInfo);
+		return pictureRepo.save(title, comments, date, uploadInfo);
 	}
 
-	public void getTotalFileSize() {
-		pictureRepo.getTotalFileSize();
+	public Long getTotalFileSize() {
+		return pictureRepo.getTotalFileSize();
 	}
 }
