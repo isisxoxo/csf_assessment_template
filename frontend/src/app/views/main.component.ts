@@ -24,10 +24,15 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.width = 500
+    this.width = 282
   }
   
   changeRatio(event: any) {
     this.height = event.target.value
+    this.width = 500
+    console.log(">>>>> HEIGHT:", this.height) //TO REMOVE
+    console.log(">>>>> WIDTH:", this.width) //TO REMOVE
   }
 
   takePicture() {
