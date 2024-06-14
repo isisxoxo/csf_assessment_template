@@ -1,1 +1,16 @@
 <!-- View 1 -->
+<div class="container">
+    <webcam [width]="width" [height]="height" [trigger]="trigger" (imageCapture)="snapshot($event)"
+        imageType="image/png">
+    </webcam>
+    <br>
+    <div>
+        Aspect:
+        <input type="radio" name="ratio" checked="checked" value="282" (change)="changeRatio($event)"> 16:9
+        <input type="radio" name="ratio" value="375" (change)="changeRatio($event)"> 4:3
+        <input type="radio" name="ratio" value="333" (change)="changeRatio($event)"> 3:2
+        <input type="radio" name="ratio" value="500" (change)="changeRatio($event)"> 1:1
+    </div>
+    <br>
+    <button (click)="takePicture()">Snap</button>
+</div>

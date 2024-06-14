@@ -1,1 +1,33 @@
 <!-- View 2 -->
+<form action="POST" [formGroup]="form" (ngSubmit)="submit()">
+    <img [src]="imageData">
+    <br>
+    <table>
+        <tr>
+            <td>Title: </td>
+            <td>
+                <input type="text" formControlName="title">
+            </td>
+        </tr>
+        <tr>
+            <div class="alert alert-danger" *ngIf="form.get('title')?.hasError('required')">
+                Title is required.
+            </div>
+        </tr>
+        <tr>
+            <div class="alert alert-danger" *ngIf="form.get('title')?.hasError('minlength')">
+                Title min starts with 5 characters.
+            </div>
+        </tr>
+        <tr>
+            <td>Comments: </td>
+            <td>
+                <textarea formControlName="comments"></textarea>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Post</button>
+</form>
+<br>
+<button class="btn btn-secondary" (click)="back()">Back</button>
